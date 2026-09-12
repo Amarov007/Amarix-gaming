@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AMARIX007 — متجر ألعاب الكمبيوتر والأندرويد</title>
+<meta name="description" content="AMARIX007: متجر رقمي لألعاب PC وAndroid والمنتجات الرقمية. تسليم فوري، دفع بالبطاقات أو USDT.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎮</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- HERO CAROUSEL -->
+<div class="hero" id="hero"></div>
+
+<!-- STATS -->
+<div class="wrap" style="margin-top:-34px;position:relative;z-index:6">
+  <div class="stats glass reveal">
+    <div class="stat"><b id="stG">0</b><span>لعبة في المتجر</span></div>
+    <div class="stat"><b>24/7</b><span>تسليم فوري للأكواد</span></div>
+    <div class="stat"><b>3</b><span>طرق دفع آمنة</span></div>
+    <div class="stat"><b id="stD">0%</b><span>أعلى خصم حالي</span></div>
+  </div>
+</div>
+
+<!-- FLASH DEALS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow"><i></i> عروض محدودة</span>
+        <h2>⚡ صفقات <span class="gtext">اليوم</span></h2>
+        <p>أقوى الخصومات على ألعاب PC — تنتهي عند منتصف الليل.</p>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="store.html?sort=disc">كل العروض ←</a>
+    </div>
+    <div id="deals" class="rail"></div>
+  </div>
+</section>
+
+<!-- FEATURED GRID -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow"><i></i> مختارات AMARIX007</span>
+        <h2>الألعاب <span class="gtext">المميزة</span></h2>
+        <p>مكتبة ضخمة تُحدَّث أسبوعياً — تُعرض ديناميكياً من قاعدة البيانات.</p>
+      </div>
+      <div class="toolbar" style="margin:0" id="fTabs">
+        <button class="chip on" data-p="">الكل</button>
+        <button class="chip" data-p="pc">🖥 PC</button>
+        <button class="chip" data-p="android">📱 أندرويد</button>
+      </div>
+    </div>
+    <div id="featured" class="grid"></div>
+    <div class="center" style="margin-top:2rem">
+      <a class="btn btn-primary btn-lg" href="store.html">استعرض كل الألعاب</a>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow"><i></i> تصفّح بذكاء</span>
+        <h2>التصنيفات</h2>
+        <p>اختر مزاجك اليوم.</p>
+      </div>
+    </div>
+    <div class="cats" id="cats"></div>
+  </div>
+</section>
+
+<!-- ANDROID STRIP -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow"><i></i> على جوالك</span>
+        <h2>ألعاب <span class="gtext">الأندرويد</span> والشحن الفوري</h2>
+        <p>شحن UC · جواهر · Robux — يُسلَّم خلال دقائق.</p>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="android.html">كل ألعاب الأندرويد ←</a>
+    </div>
+    <div id="android" class="rail"></div>
+  </div>
+</section>
+
+<!-- FUTURE DIGITAL PRODUCTS (هياكل جاهزة) -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow"><i></i> التوسّع القادم</span>
+        <h2>منتجات <span class="gtext">رقمية</span> قريباً</h2>
+        <p>أقسام جاهزة برمجياً — تُفعَّل من لوحة التحكم بضغطة واحدة.</p>
+      </div>
+    </div>
+    <div class="grid wide" id="soon"></div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="glass reveal" style="padding:clamp(1.6rem,4vw,3rem);text-align:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:var(--grad);opacity:.13"></div>
+      <div style="position:relative">
+        <h2 style="margin:0 0 .6rem;font-size:clamp(1.3rem,3vw,2rem)">انضم إلى <span class="gtext">AMARIX007</span> واحصل على خصم 10%</h2>
+        <p class="muted" style="max-width:52ch;margin:0 auto 1.4rem">أنشئ حسابك مجاناً، احفظ مكتبتك، وتابع الطلبات — والدفع بالـ USDT بدون رسوم إضافية.</p>
+        <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
+          <a class="btn btn-primary btn-lg" href="signup.html">إنشاء حساب مجاني</a>
+          <a class="btn btn-ghost btn-lg" href="login.html">لدي حساب</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  AMX.shell('index.html');
+  AMX.heroCarousel('#hero');
+
+  // العروض + الأندرويد (rails)
+  AMX.renderGrid('#deals',   { sort:'disc',  limit:10, platform:'pc' }, { rail:true });
+  AMX.renderGrid('#android', { platform:'android', sort:'rate', limit:10 }, { rail:true });
+
+  // المميزة + التبويبات
+  const load = p => AMX.renderGrid('#featured', { featured:1, limit:12, ...(p?{platform:p}:{}) , sort:'rate' });
+  load('');
+  AMX.$$('#fTabs .chip').forEach(b => b.onclick = () => {
+    AMX.$$('#fTabs .chip').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); load(b.dataset.p);
+  });
+
+  // التصنيفات
+  const cats = await AMX.api.getCategories();
+  AMX.$('#cats').innerHTML = cats.map(c => {
+    const n = AMX_DATA.games.filter(g => g.genres.includes(c.key)).length;
+    return `<a class="cat reveal" href="store.html?genre=${c.key}">
+      <span class="ring">${c.icon}</span><b>${c.name}</b><span>${n} لعبة</span></a>`;
+  }).join('');
+
+  // الأقسام المستقبلية
+  const up = await AMX.api.getUpcoming();
+  AMX.$('#soon').innerHTML = up.map(u => `
+    <div class="soon reveal"><span class="lbl">${u.cta}</span>
+      <span class="ico">${u.icon}</span><h4>${u.title}</h4><p>${u.desc}</p>
+      <button class="btn btn-ghost btn-sm" onclick="AMX.toast('سيتم تفعيل هذا القسم من لوحة التحكم قريباً 🚀')">أبلغني عند التوفر</button>
+    </div>`).join('');
+
+  // الإحصائيات
+  const all = AMX_DATA.games;
+  AMX.$('#stG').textContent = all.length + '+';
+  AMX.$('#stD').textContent = Math.max(...all.map(g => g.discount)) + '%';
+  AMX.reveal();
+})();
+</script>
+</body>
+</html>

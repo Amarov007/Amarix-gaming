@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ألعاب الأندرويد — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📱</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="wrap page-head">
+  <span class="eyebrow"><i></i> Android Store</span>
+  <h1>ألعاب <span class="gtext">الأندرويد</span> والشحن الفوري</h1>
+  <p class="muted">شحن UC · جواهر · Diamonds · Robux — تسليم خلال دقائق بعد تأكيد الدفع.</p>
+</div>
+
+<section style="padding-top:1.6rem">
+  <div class="wrap">
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:2.4rem">
+      <div class="glass reveal" style="padding:1.2rem"><b>⚡ تسليم فوري</b><p class="muted" style="font-size:.85rem;margin:.4rem 0 0">الكود يصل على بريدك ولوحة حسابك مباشرة.</p></div>
+      <div class="glass reveal" style="padding:1.2rem"><b>🔒 بدون تسجيل دخول لحسابك</b><p class="muted" style="font-size:.85rem;margin:.4rem 0 0">شحن بالـ ID فقط — لا نطلب كلمة مرورك أبداً.</p></div>
+      <div class="glass reveal" style="padding:1.2rem"><b>🪙 دفع بالـ USDT</b><p class="muted" style="font-size:.85rem;margin:.4rem 0 0">TRC20 بدون رسوم وسيط.</p></div>
+    </div>
+    <div class="toolbar" id="tabs">
+      <button class="chip on" data-g="">الكل</button>
+      <button class="chip" data-g="shooter">🎯 تصويب</button>
+      <button class="chip" data-g="rpg">🐉 RPG</button>
+      <button class="chip" data-g="strategy">♟️ استراتيجية</button>
+      <button class="chip" data-g="sports">🏆 رياضة</button>
+      <button class="chip" data-g="racing">🏎️ سيارات</button>
+      <span style="flex:1"></span>
+      <select class="chip" id="sort">
+        <option value="rate">الأعلى تقييماً</option>
+        <option value="disc">أعلى خصم</option>
+        <option value="price">الأرخص</option>
+      </select>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(() => {
+  AMX.shell('android.html');
+  const st = { genre:'', sort:'rate' };
+  const run = () => AMX.renderGrid('#grid', { platform:'android', sort:st.sort, ...(st.genre?{genre:st.genre}:{}) , limit:40 });
+  AMX.$$('#tabs [data-g]').forEach(b => b.onclick = () => {
+    AMX.$$('#tabs [data-g]').forEach(x => x.classList.remove('on')); b.classList.add('on');
+    st.genre = b.dataset.g; run();
+  });
+  AMX.$('#sort').onchange = e => { st.sort = e.target.value; run(); };
+  run();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المتجر — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎮</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="wrap page-head">
+  <span class="eyebrow"><i></i> المكتبة الكاملة</span>
+  <h1 id="ttl">كل <span class="gtext">الألعاب</span></h1>
+  <p class="muted" id="cnt">جارٍ التحميل…</p>
+</div>
+
+<section style="padding-top:1.4rem">
+  <div class="wrap">
+    <div class="toolbar" id="genres"></div>
+    <div class="toolbar">
+      <button class="chip" data-plat="">كل المنصات</button>
+      <button class="chip" data-plat="pc">🖥 PC</button>
+      <button class="chip" data-plat="android">📱 أندرويد</button>
+      <span style="flex:1"></span>
+      <select class="chip" id="sort">
+        <option value="rate">الأعلى تقييماً</option>
+        <option value="disc">أعلى خصم</option>
+        <option value="new">الأحدث</option>
+        <option value="price">الأرخص سعراً</option>
+        <option value="price-">الأغلى سعراً</option>
+        <option value="az">أبجدياً</option>
+      </select>
+      <select class="chip" id="price">
+        <option value="">كل الأسعار</option>
+        <option value="0">مجاناً فقط</option>
+        <option value="10">حتى 10$</option>
+        <option value="25">حتى 25$</option>
+        <option value="50">حتى 50$</option>
+      </select>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div class="center" style="margin-top:2.4rem"><button class="btn btn-primary btn-lg" id="more">تحميل المزيد</button></div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const P = new URLSearchParams(location.search);
+  const state = {
+    genre: P.get('genre') || '', platform: P.get('platform') || '',
+    sort: P.get('sort') || 'rate', search: P.get('search') || '',
+    maxPrice: P.get('maxPrice') ?? '', limit: 16,
+  };
+  AMX.shell(state.platform === 'android' ? 'android.html' : 'store.html');
+  if (state.search) AMX.$('#amxSearch').value = state.search;
+
+  // شرائح التصنيفات
+  const cats = await AMX.api.getCategories();
+  AMX.$('#genres').innerHTML = `<button class="chip" data-g="">الكل</button>` +
+    cats.map(c => `<button class="chip" data-g="${c.key}">${c.icon} ${c.name}</button>`).join('');
+
+  const paint = () => {
+    AMX.$$('[data-g]').forEach(b => b.classList.toggle('on', b.dataset.g === state.genre));
+    AMX.$$('[data-plat]').forEach(b => b.classList.toggle('on', b.dataset.plat === state.platform));
+    AMX.$('#sort').value = state.sort; AMX.$('#price').value = state.maxPrice;
+    const g = cats.find(c => c.key === state.genre);
+    AMX.$('#ttl').innerHTML = state.search ? `نتائج: <span class="gtext">${AMX.esc(state.search)}</span>`
+      : g ? `تصنيف <span class="gtext">${g.name}</span>` : `كل <span class="gtext">الألعاب</span>`;
+  };
+
+  const run = async () => {
+    paint();
+    const q = { sort:state.sort, limit:state.limit };
+    if (state.genre) q.genre = state.genre;
+    if (state.platform) q.platform = state.platform;
+    if (state.search) q.search = state.search;
+    if (state.maxPrice !== '') q.maxPrice = state.maxPrice;
+    const r = await AMX.renderGrid('#grid', q);
+    AMX.$('#cnt').textContent = `${r.total} عنصر متاح · معروض ${r.games.length}`;
+    AMX.$('#more').classList.toggle('hide', r.games.length >= r.total);
+  };
+
+  AMX.$$('[data-g]').forEach(b => b.onclick = () => { state.genre = b.dataset.g; state.limit = 16; run(); });
+  AMX.$$('[data-plat]').forEach(b => b.onclick = () => { state.platform = b.dataset.plat; state.limit = 16; run(); });
+  AMX.$('#sort').onchange = e => { state.sort = e.target.value; run(); };
+  AMX.$('#price').onchange = e => { state.maxPrice = e.target.value; run(); };
+  AMX.$('#more').onclick = () => { state.limit += 16; run(); };
+  run();
+})();
+</script>
+</body>
+</html>

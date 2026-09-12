@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مكتبتي — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📚</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="wrap page-head">
+  <span class="eyebrow"><i></i> حسابي</span>
+  <h1>مكتبة <span class="gtext">الألعاب</span></h1>
+  <p class="muted" id="who">—</p>
+</div>
+
+<section style="padding-top:1.4rem">
+  <div class="wrap">
+    <div class="stats glass reveal" style="margin-bottom:2rem">
+      <div class="stat"><b id="n1">0</b><span>لعبة مملوكة</span></div>
+      <div class="stat"><b id="n2">$0</b><span>إجمالي المشتريات</span></div>
+      <div class="stat"><b id="n3">0</b><span>ألعاب أندرويد</span></div>
+      <div class="stat"><b id="n4">0</b><span>أكواد بانتظار التحميل</span></div>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(() => {
+  AMX.shell('library.html');
+  const u = AMX.auth.user(), ids = AMX.library.ids();
+  const mine = AMX_DATA.games.filter(g => ids.includes(g._id));
+  AMX.$('#who').textContent = u ? `مرحباً ${u.name} · ${u.email}` : 'أنت غير مسجّل — سجّل الدخول لمزامنة مكتبتك على كل أجهزتك.';
+  AMX.$('#n1').textContent = mine.length;
+  AMX.$('#n2').textContent = '$' + mine.reduce((s,g) => s + AMX.final(g), 0).toFixed(2);
+  AMX.$('#n3').textContent = mine.filter(g => g.platform === 'android').length;
+  AMX.$('#n4').textContent = mine.length;
+
+  AMX.$('#grid').innerHTML = mine.length ? mine.map(g => `
+    <article class="card reveal">
+      <div class="card-media"><img src="${g.cover}" alt="" onerror="this.src='${g.fallback}'">
+        <div class="card-badges"><span class="pill new">مملوكة</span>
+        <span class="pill plat">${g.platform === 'pc' ? '🖥 PC' : '📱 Android'}</span></div></div>
+      <div class="card-body"><h3>${AMX.esc(g.title)}</h3>
+        <div class="card-genre">${g.genres.map(AMX.genreName).join(' · ')}</div>
+        <button class="btn btn-primary btn-sm btn-block"
+          onclick="AMX.toast('بدء التحميل: ${AMX.esc(g.title)} — يتم عبر عميل AMARIX007 لاحقاً')">
+          ⭳ ${g.platform === 'pc' ? 'تحميل / تثبيت' : 'تحميل APK'}</button>
+      </div></article>`).join('')
+    : `<div class="lib-empty glass" style="grid-column:1/-1">
+        <div style="font-size:2.6rem">📚</div>
+        <h3 style="margin:.6rem 0 .3rem">مكتبتك فارغة حتى الآن</h3>
+        <p class="muted" style="margin:0 0 1.2rem">كل لعبة تشتريها تظهر هنا فوراً مع كود التنشيط.</p>
+        <a class="btn btn-primary btn-lg" href="store.html">تصفّح المتجر</a></div>`;
+  AMX.reveal();
+
+  if (!mine.length) {
+    document.querySelector('section .wrap').insertAdjacentHTML('beforeend', `
+      <div class="sec-head" style="margin-top:3.4rem"><div>
+        <span class="eyebrow"><i></i> مقترح لك</span><h2>ابدأ من هنا</h2></div></div>
+      <div id="rec" class="grid"></div>`);
+    AMX.renderGrid('#rec', { sort:'rate', limit:8 });
+  }
+})();
+</script>
+</body>
+</html>

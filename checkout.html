@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الدفع — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>💳</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="wrap page-head">
+  <span class="eyebrow"><i></i> دفع آمن ومشفّر</span>
+  <h1>إتمام <span class="gtext">الشراء</span></h1>
+</div>
+
+<section style="padding-top:1.4rem">
+  <div class="wrap">
+    <div class="steps">
+      <div class="step on"><i>1</i> السلة</div><span class="step-line"></span>
+      <div class="step on"><i>2</i> الدفع</div><span class="step-line"></span>
+      <div class="step" id="s3"><i>3</i> استلام الأكواد</div>
+    </div>
+
+    <div class="co-grid">
+      <!-- طرق الدفع -->
+      <div class="glass panel reveal">
+        <h3 style="margin:0 0 1rem">اختر طريقة الدفع</h3>
+        <div class="pay-opts">
+          <div class="pay-opt on" data-m="card"><span class="l" style="color:#1a1f71">VISA</span>
+            <div><b>بطاقة ائتمان</b><span>Visa · MasterCard · Mada</span></div></div>
+          <div class="pay-opt usdt" data-m="usdt"><span class="l">USDT</span>
+            <div><b>عملات رقمية</b><span>USDT — TRC20 / BEP20</span></div></div>
+        </div>
+
+        <!-- نموذج البطاقة -->
+        <form id="cardForm" style="margin-top:1.6rem" novalidate>
+          <div class="field" id="fNum"><label>رقم البطاقة</label>
+            <div class="box"><input id="num" inputmode="numeric" placeholder="4242 4242 4242 4242" maxlength="19"><span class="fi" id="brand">💳</span></div>
+            <div class="err">رقم بطاقة غير صالح (Luhn).</div></div>
+          <div class="field" id="fName"><label>الاسم على البطاقة</label>
+            <div class="box"><input id="cname" placeholder="AMAR M ALI"><span class="fi">👤</span></div>
+            <div class="err">أدخل الاسم كما هو على البطاقة.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+            <div class="field" id="fExp"><label>تاريخ الانتهاء</label>
+              <div class="box"><input id="exp" placeholder="MM/YY" maxlength="5"><span class="fi">📅</span></div>
+              <div class="err">تاريخ غير صالح.</div></div>
+            <div class="field" id="fCvc"><label>CVC</label>
+              <div class="box"><input id="cvc" placeholder="123" maxlength="4"><span class="fi">🔒</span></div>
+              <div class="err">3 أرقام.</div></div>
+          </div>
+          <p class="muted" style="font-size:.78rem;margin:.2rem 0 1.2rem">
+            🔐 لا تُخزَّن بيانات بطاقتك على سيرفراتنا — تُمرَّر مباشرة لبوابة الدفع (Stripe Elements / PCI-DSS).</p>
+          <button class="btn btn-primary btn-block btn-lg" id="payCard">ادفع <span id="btnAmt">$0.00</span> الآن</button>
+        </form>
+
+        <!-- USDT -->
+        <div id="usdtBox" class="hide" style="margin-top:1.6rem">
+          <div class="toolbar">
+            <button class="chip on" data-net="TRC20">TRON (TRC20) · رسوم ~1$</button>
+            <button class="chip" data-net="BEP20">BNB Smart Chain (BEP20)</button>
+          </div>
+          <div style="display:grid;gap:1rem;justify-items:center;text-align:center">
+            <div class="qr" id="qr"></div>
+            <div style="width:100%">
+              <p class="muted" style="font-size:.82rem;margin:0 0 .4rem">أرسل <b class="gtext" id="usdtAmt">0</b> USDT إلى العنوان التالي (شبكة <b id="netName">TRC20</b>):</p>
+              <div class="addr" id="addr">TXk9AmARiX007dEmoAddrEsS4Usdt7Trc20xyz</div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:.6rem" id="copy">📋 نسخ العنوان</button>
+            </div>
+            <div class="field" style="width:100%;text-align:start"><label>هاش العملية (TxID)</label>
+              <div class="box"><input id="tx" placeholder="0x… أو TxID"><span class="fi">🔗</span></div></div>
+            <button class="btn btn-primary btn-block btn-lg" id="payUsdt">تأكيد التحويل والتحقق</button>
+            <p class="muted" style="font-size:.76rem;margin:0">يتم التحقق تلقائياً عبر Webhook من مزوّد الدفع (NOWPayments / Coinbase Commerce) بعد 1–3 تأكيدات.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- الملخص -->
+      <div class="glass panel reveal" style="position:sticky;top:calc(var(--nav-h) + 14px)">
+        <h3 style="margin:0 0 1rem">ملخّص الطلب</h3>
+        <div id="sum" style="display:grid;gap:.7rem;max-height:44vh;overflow:auto"></div>
+        <div class="field" style="margin:1.2rem 0 .6rem"><label>كود الخصم</label>
+          <div class="box"><input id="promo" placeholder="AMARIX10"><span class="fi">🎟</span></div></div>
+        <button class="btn btn-ghost btn-sm btn-block" id="applyPromo">تطبيق الكود</button>
+        <div style="border-top:1px solid var(--stroke);margin:1.1rem 0;padding-top:1.1rem;display:grid;gap:.55rem">
+          <div class="row"><span class="muted">المجموع الفرعي</span><span id="sub">$0.00</span></div>
+          <div class="row" id="discRow" style="display:none"><span class="muted">الخصم</span><span style="color:var(--ok)" id="disc">-$0.00</span></div>
+          <div class="row"><span class="muted">رسوم المعاملة</span><span id="fee">$0.00</span></div>
+          <div class="row total"><span>الإجمالي</span><span class="gtext" id="tot">$0.00</span></div>
+        </div>
+        <p class="muted" style="font-size:.76rem;margin:0">بالمتابعة أنت توافق على <a href="support.html#terms" class="gtext">شروط الاستخدام</a>. الأكواد تُسلَّم فوراً على بريدك ومكتبتك.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="assets/js/payments.js"></script>
+<script>
+(() => {
+  AMX.shell('');
+  const S = { method:'card', net:'TRC20', promo:0 };
+  const ADDR = { TRC20:'TXk9AmARiX007dEmoAddrEsS4Usdt7Trc20xyz', BEP20:'0xA7amarix0071bDeMo9AddrEsS4Usdt5Bep20' };
+
+  /* ---- الملخص والحسابات ---- */
+  const calc = () => {
+    const sub = AMX.cart.total();
+    const disc = +(sub * S.promo).toFixed(2);
+    const fee = S.method === 'usdt' ? (S.net === 'TRC20' ? 1 : 0.5) : +((sub - disc) * 0.029 + 0.30).toFixed(2);
+    const tot = Math.max(0, +(sub - disc + (sub ? fee : 0)).toFixed(2));
+    return { sub, disc, fee: sub ? fee : 0, tot };
+  };
+  const paint = () => {
+    const it = AMX.cart.items(), c = calc();
+    AMX.$('#sum').innerHTML = it.length ? it.map(i => `
+      <div class="ci"><img src="${i.cover}" alt=""><div><b>${AMX.esc(i.title)}</b>
+      <span class="muted" style="font-size:.74rem">${i.platform === 'pc' ? 'PC' : 'Android'}</span>
+      <div class="p">${AMX.money(i.price)}</div></div>
+      <button class="rm" data-rm="${i.id}">🗑</button></div>`).join('')
+      : `<div class="empty">السلة فارغة — <a class="gtext" href="store.html">أضف ألعاباً</a></div>`;
+    AMX.$$('[data-rm]').forEach(b => b.onclick = () => { AMX.cart.remove(b.dataset.rm); paint(); });
+    AMX.$('#sub').textContent = AMX.money(c.sub);
+    AMX.$('#fee').textContent = AMX.money(c.fee);
+    AMX.$('#tot').textContent = AMX.money(c.tot);
+    AMX.$('#btnAmt').textContent = AMX.money(c.tot);
+    AMX.$('#usdtAmt').textContent = c.tot.toFixed(2);
+    AMX.$('#discRow').style.display = c.disc ? 'flex' : 'none';
+    AMX.$('#disc').textContent = '-' + AMX.money(c.disc);
+    drawQR(c.tot);
+  };
+  document.addEventListener('amx:cart', paint);
+
+  /* ---- تبديل طريقة الدفع ---- */
+  AMX.$$('.pay-opt').forEach(o => o.onclick = () => {
+    AMX.$$('.pay-opt').forEach(x => x.classList.remove('on')); o.classList.add('on');
+    S.method = o.dataset.m;
+    AMX.$('#cardForm').classList.toggle('hide', S.method !== 'card');
+    AMX.$('#usdtBox').classList.toggle('hide', S.method !== 'usdt');
+    paint();
+  });
+  AMX.$$('[data-net]').forEach(b => b.onclick = () => {
+    AMX.$$('[data-net]').forEach(x => x.classList.remove('on')); b.classList.add('on');
+    S.net = b.dataset.net; AMX.$('#netName').textContent = S.net;
+    AMX.$('#addr').textContent = ADDR[S.net]; paint();
+  });
+  AMX.$('#copy').onclick = () => { navigator.clipboard?.writeText(AMX.$('#addr').textContent); AMX.toast('تم نسخ العنوان', 'ok'); };
+
+  function drawQR(amount){
+    const box = AMX.$('#qr'); if (!box) return;
+    const uri = S.net === 'TRC20' ? `tron:${ADDR.TRC20}?amount=${amount}` : `ethereum:${ADDR.BEP20}?value=${amount}`;
+    box.innerHTML = '';
+    if (typeof QRCode === 'function') {            // مكتبة qrcodejs
+      new QRCode(box, { text:uri, width:150, height:150, correctLevel:QRCode.CorrectLevel.M });
+    } else {                                        // احتياطي بلا إنترنت
+      box.innerHTML = `<div style="display:grid;place-items:center;height:100%;color:#111;
+        font-size:.7rem;text-align:center;padding:6px;line-height:1.5">امسح العنوان يدوياً<br><b>${S.net}</b></div>`;
+    }
+  }
+
+  /* ---- كود الخصم ---- */
+  AMX.$('#applyPromo').onclick = () => {
+    const codes = { AMARIX10:.10, WELCOME15:.15, USDT5:.05 };
+    const v = codes[AMX.$('#promo').value.trim().toUpperCase()];
+    if (!v) return AMX.toast('كود غير صالح ❌');
+    S.promo = v; paint(); AMX.toast(`تم تطبيق خصم ${v*100}%`, 'ok');
+  };
+
+  /* ---- تنفيذ الدفع (يستخدم PAY من payments.js) ---- */
+  AMX.$('#payCard').onclick = async e => {
+    e.preventDefault();
+    if (!AMX.cart.count()) return AMX.toast('سلتك فارغة');
+    if (!PAY.validateCard()) return;
+    const b = e.target; b.disabled = true; b.textContent = 'جارٍ معالجة الدفع…';
+    const r = await PAY.payWithCard(calc().tot, AMX.cart.items());
+    b.disabled = false; b.innerHTML = 'ادفع <span id="btnAmt">' + AMX.money(calc().tot) + '</span> الآن';
+    if (r.ok) PAY.success(r);
+  };
+  AMX.$('#payUsdt').onclick = async e => {
+    if (!AMX.cart.count()) return AMX.toast('سلتك فارغة');
+    const tx = AMX.$('#tx').value.trim();
+    if (tx.length < 10) return AMX.toast('أدخل هاش العملية (TxID) للتحقق');
+    const b = e.target; b.disabled = true; b.textContent = 'جارٍ التحقق على الشبكة…';
+    const r = await PAY.payWithUSDT(calc().tot, S.net, tx, AMX.cart.items());
+    b.disabled = false; b.textContent = 'تأكيد التحويل والتحقق';
+    if (r.ok) PAY.success(r);
+  };
+
+  PAY.maskInputs();
+  paint();
+})();
+</script>
+</body>
+</html>

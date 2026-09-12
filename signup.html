@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إنشاء حساب — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎮</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth glass">
+    <a href="index.html" class="logo" style="margin-bottom:1.4rem"><span class="mark">A7</span><span class="txt">AMARIX007</span></a>
+    <h1>أنشئ حسابك <span class="gtext">مجاناً</span></h1>
+    <p class="sub">خصم 10% على أول عملية شراء + مكتبة ألعاب دائمة.</p>
+
+    <form id="f" novalidate>
+      <div class="field" id="fName">
+        <label for="name">اسم المستخدم</label>
+        <div class="box"><input id="name" placeholder="AMARIX_Player" autocomplete="nickname"><span class="fi">👤</span></div>
+        <div class="err">3 أحرف على الأقل.</div>
+      </div>
+      <div class="field" id="fEmail">
+        <label for="email">البريد الإلكتروني</label>
+        <div class="box"><input id="email" type="email" placeholder="you@example.com" autocomplete="email"><span class="fi">@</span></div>
+        <div class="err">أدخل بريداً صحيحاً.</div>
+      </div>
+      <div class="field" id="fPass">
+        <label for="pass">كلمة المرور</label>
+        <div class="box"><input id="pass" type="password" placeholder="8 أحرف + رقم" autocomplete="new-password">
+          <span class="fi" id="eye" style="cursor:pointer">👁</span></div>
+        <div class="meter"><i id="mt"></i></div>
+        <div class="err">8 أحرف على الأقل وتحتوي رقماً.</div>
+      </div>
+      <div class="field" id="fPass2">
+        <label for="pass2">تأكيد كلمة المرور</label>
+        <div class="box"><input id="pass2" type="password" placeholder="أعد الكتابة"><span class="fi">🔒</span></div>
+        <div class="err">كلمتا المرور غير متطابقتين.</div>
+      </div>
+      <label class="chk" style="margin-bottom:1.2rem"><input type="checkbox" id="tos">
+        أوافق على <a href="support.html#terms" class="gtext">الشروط وسياسة الخصوصية</a></label>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="sub">إنشاء الحساب</button>
+    </form>
+
+    <div class="divider">أو</div>
+    <div class="social-auth">
+      <button class="btn btn-ghost" onclick="AMX.toast('OAuth: Google — يُربط لاحقاً')">G Google</button>
+      <button class="btn btn-ghost" onclick="AMX.toast('OAuth: Discord — يُربط لاحقاً')">🎮 Discord</button>
+    </div>
+    <p class="center muted" style="font-size:.85rem;margin:1.4rem 0 0">
+      لديك حساب؟ <a href="login.html" class="gtext" style="font-weight:700">سجّل الدخول</a></p>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+/* Back-End لاحقاً: POST /api/auth/register -> bcrypt.hash + JWT + بريد تفعيل */
+const bad = (id, on) => AMX.$('#'+id).classList.toggle('bad', on);
+AMX.$('#eye').onclick = () => { const p = AMX.$('#pass'); p.type = p.type === 'password' ? 'text' : 'password'; };
+AMX.$('#pass').oninput = e => {
+  const v = e.target.value;
+  const s = [v.length >= 8, /\d/.test(v), /[A-Z]/.test(v), /[^\w]/.test(v)].filter(Boolean).length;
+  AMX.$('#mt').style.width = (s * 25) + '%';
+};
+AMX.$('#f').onsubmit = async e => {
+  e.preventDefault();
+  const n = AMX.$('#name').value.trim(), em = AMX.$('#email').value.trim();
+  const p = AMX.$('#pass').value, p2 = AMX.$('#pass2').value;
+  const errs = [n.length < 3, !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em), !(p.length >= 8 && /\d/.test(p)), p !== p2 || !p2];
+  ['fName','fEmail','fPass','fPass2'].forEach((id,i) => bad(id, errs[i]));
+  if (!AMX.$('#tos').checked) return AMX.toast('يجب الموافقة على الشروط أولاً');
+  if (errs.some(Boolean)) return;
+  const b = AMX.$('#sub'); b.textContent = 'جارٍ إنشاء الحساب…'; b.disabled = true;
+  await new Promise(r => setTimeout(r, 800));
+  AMX.auth.login(em, n);
+  AMX.toast('تم إنشاء حسابك 🎉 خصم 10% مُفعّل', 'ok');
+  setTimeout(() => location.href = 'index.html', 800);
+};
+</script>
+</body>
+</html>

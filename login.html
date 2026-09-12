@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تسجيل الدخول — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎮</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth glass">
+    <a href="index.html" class="logo" style="margin-bottom:1.4rem"><span class="mark">A7</span><span class="txt">AMARIX007</span></a>
+    <h1>مرحباً بعودتك 👋</h1>
+    <p class="sub">سجّل الدخول للوصول إلى مكتبتك وطلباتك.</p>
+
+    <form id="f" novalidate>
+      <div class="field" id="fEmail">
+        <label for="email">البريد الإلكتروني</label>
+        <div class="box"><input id="email" type="email" placeholder="you@example.com" autocomplete="email"><span class="fi">@</span></div>
+        <div class="err">أدخل بريداً إلكترونياً صحيحاً.</div>
+      </div>
+      <div class="field" id="fPass">
+        <label for="pass">كلمة المرور</label>
+        <div class="box"><input id="pass" type="password" placeholder="••••••••" autocomplete="current-password">
+          <span class="fi" id="eye" style="cursor:pointer">👁</span></div>
+        <div class="err">كلمة المرور 8 أحرف على الأقل.</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:.2rem 0 1.3rem">
+        <label class="chk"><input type="checkbox" id="rem" checked> تذكرني</label>
+        <a href="#" class="gtext" style="font-size:.82rem;font-weight:700"
+           onclick="event.preventDefault();AMX.toast('سيتم إرسال رابط الاستعادة عند ربط الـ Back-End')">نسيت كلمة المرور؟</a>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="sub">دخول</button>
+    </form>
+
+    <div class="divider">أو تابع بواسطة</div>
+    <div class="social-auth">
+      <button class="btn btn-ghost" onclick="AMX.toast('OAuth: Google — يُربط عبر Firebase/Passport لاحقاً')">G Google</button>
+      <button class="btn btn-ghost" onclick="AMX.toast('OAuth: Steam — يُربط عبر OpenID لاحقاً')">🎮 Steam</button>
+    </div>
+    <p class="center muted" style="font-size:.85rem;margin:1.4rem 0 0">
+      ليس لديك حساب؟ <a href="signup.html" class="gtext" style="font-weight:700">أنشئ واحداً مجاناً</a></p>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+/* ملاحظة أمنية: هذا تحقق واجهة فقط. عند ربط الـ Back-End:
+   POST /api/auth/login {email,password} -> { token(JWT httpOnly), user }
+   والتحقق النهائي + bcrypt يكون على السيرفر دائماً. */
+const bad = (id, on) => AMX.$('#'+id).classList.toggle('bad', on);
+AMX.$('#eye').onclick = () => { const p = AMX.$('#pass'); p.type = p.type === 'password' ? 'text' : 'password'; };
+AMX.$('#f').onsubmit = async e => {
+  e.preventDefault();
+  const email = AMX.$('#email').value.trim(), pass = AMX.$('#pass').value;
+  const e1 = !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email), e2 = pass.length < 8;
+  bad('fEmail', e1); bad('fPass', e2);
+  if (e1 || e2) return;
+  const b = AMX.$('#sub'); b.textContent = 'جارٍ التحقق…'; b.disabled = true;
+  await new Promise(r => setTimeout(r, 700));           // محاكاة استدعاء السيرفر
+  AMX.auth.login(email);
+  AMX.toast('تم تسجيل الدخول بنجاح', 'ok');
+  setTimeout(() => location.href = 'library.html', 600);
+};
+</script>
+</body>
+</html>

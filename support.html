@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الدعم — AMARIX007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎧</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="wrap page-head">
+  <span class="eyebrow"><i></i> نحن هنا 24/7</span>
+  <h1>مركز <span class="gtext">الدعم</span></h1>
+  <p class="muted">متوسط زمن الرد: أقل من 15 دقيقة عبر Discord أو Telegram.</p>
+</div>
+
+<section style="padding-top:1.4rem">
+  <div class="wrap co-grid">
+    <div>
+      <div id="faq" class="reveal">
+        <h3 style="margin:0 0 1rem">الأسئلة الشائعة</h3>
+        <details class="acc" open><summary>كيف أستلم اللعبة بعد الشراء؟<span>+</span></summary>
+          <p>يظهر كود التنشيط فوراً في صفحة «مكتبتي» ويُرسل نسخة على بريدك. ألعاب PC تُنشَّط على Steam/Epic، وألعاب الأندرويد تصل كـ APK أو شحن مباشر بالـ ID.</p></details>
+        <details class="acc"><summary>هل الدفع بالـ USDT آمن؟<span>+</span></summary>
+          <p>نعم. نستخدم عنوان محفظة مخصصاً لكل طلب، ويتم تأكيد التحويل تلقائياً بعد 1–3 تأكيدات على الشبكة (TRC20 الأسرع والأرخص). لا نحتفظ بمفاتيحك أبداً.</p></details>
+        <details class="acc"><summary>ما هي طرق الدفع المدعومة؟<span>+</span></summary>
+          <p>Visa · MasterCard · Mada · PayPal · USDT (TRC20 / BEP20). تُضاف رسوم معاملة البطاقات 2.9% + 0.30$، ورسوم الشبكة للعملات الرقمية تقارب 1$ فقط.</p></details>
+        <details class="acc" id="refund"><summary>سياسة الاستبدال والاسترجاع<span>+</span></summary>
+          <p>يمكن استرجاع أي كود لم يُستخدم خلال 48 ساعة من الشراء. الأكواد المستخدمة أو المشغّلة غير قابلة للاسترجاع وفقاً لسياسات الناشرين. الشحن بالـ ID لا يُسترجع بعد التسليم.</p></details>
+        <details class="acc"><summary>هل الألعاب أصلية؟<span>+</span></summary>
+          <p>نعم، جميع الأكواد أصلية من موزّعين معتمدين، وتُفعَّل عالمياً إلا إن ذُكر خلاف ذلك في صفحة اللعبة (Region Lock).</p></details>
+        <details class="acc" id="terms"><summary>الشروط والخصوصية<span>+</span></summary>
+          <p>باستخدامك AMARIX007 توافق على عدم إعادة بيع الأكواد أو استخدام وسائل دفع غير مصرّح بها. نحفظ بريدك وسجل طلباتك فقط، ولا نخزّن بيانات بطاقتك على سيرفراتنا (تُمرَّر مشفّرة لبوابة الدفع المعتمدة PCI-DSS).</p></details>
+      </div>
+    </div>
+
+    <div class="glass panel reveal">
+      <h3 style="margin:0 0 1rem">أرسل تذكرة دعم</h3>
+      <form id="tf" novalidate>
+        <div class="field"><label>البريد الإلكتروني</label>
+          <div class="box"><input id="em" type="email" placeholder="you@example.com"><span class="fi">@</span></div></div>
+        <div class="field"><label>رقم الطلب (اختياري)</label>
+          <div class="box"><input id="or" placeholder="AMX-XXXXXX"><span class="fi">#</span></div></div>
+        <div class="field"><label>الموضوع</label>
+          <div class="box"><input id="sj" placeholder="مشكلة في تنشيط الكود"><span class="fi">📝</span></div></div>
+        <div class="field"><label>الرسالة</label>
+          <textarea id="ms" rows="5" placeholder="اشرح المشكلة بالتفصيل…"
+            style="width:100%;padding:.85rem 1rem;border-radius:14px;background:rgba(255,255,255,.05);
+            border:1px solid var(--stroke);outline:none;resize:vertical"></textarea></div>
+        <button class="btn btn-primary btn-block btn-lg">إرسال التذكرة</button>
+      </form>
+      <div class="divider">أو تواصل مباشرة</div>
+      <div class="social-auth">
+        <button class="btn btn-ghost" onclick="AMX.toast('Discord: discord.gg/amarix007')">🎮 Discord</button>
+        <button class="btn btn-ghost" onclick="AMX.toast('Telegram: @amarix007support')">✈ Telegram</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+AMX.shell('support.html');
+AMX.$('#tf').onsubmit = e => {
+  e.preventDefault();
+  if (!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(AMX.$('#em').value.trim())) return AMX.toast('أدخل بريداً صحيحاً');
+  if (AMX.$('#ms').value.trim().length < 10) return AMX.toast('اكتب تفاصيل أكثر عن المشكلة');
+  AMX.toast('تم إرسال التذكرة — رقمها #' + Date.now().toString(36).toUpperCase(), 'ok');
+  e.target.reset();
+};
+</script>
+</body>
+</html>
