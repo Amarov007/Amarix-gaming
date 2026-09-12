@@ -249,4 +249,13 @@ app.post('/api/setup/admin', wrap(async (req, res) => {
   ok(res, { token: sign(u), user: { id: u._id, email: u.email, role: u.role } }, 201);
 }));app.use(express.static('.'));
 app.use((req, res) => res.status(404).json({ error: 'المسار غير موجود' }));
-app.listen(PORT, () => console.log(`AMARIX007 API on :${PORT}`))
+const path = require('path');
+
+// عرض صفحة index.html عند الدخول للرابط الرئيسي
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.use((req, res) => res.status(404).json({ error: 'المسار غير موجود' }));
+app.listen(PORT, () => console.log(`AMARIX007 API on :${PORT}`));
+
