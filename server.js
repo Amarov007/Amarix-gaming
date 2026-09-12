@@ -19,92 +19,11 @@ const {
 /* ── 1) DB ───────────────────────────────────────────── */
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(e => { console.error('DB error:', e.message); process.exit(1); });
+  .catch(e => console.error('DB error:', e.message));
 
 /* ── 2) MODELS ───────────────────────────────────────── */
 const UserSchema = new mongoose.Schema({
-  name:     { type: String, required: true, trim: true },
-  email:    { type: String, required: true, unique: true, lowercase: true, trim: true },
-  password: { type: String, required: true, minlength: 8, select: false },
-  role:     { type: String, enum: ['user', 'admin'], default: 'user' },
-  library:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
-}, { timestamps: true });
-
-UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-UserSchema.methods.match = function (p) { return bcrypt.compare(p, this.password); };
-
-const GameSchema = new mongoose.Schema({
-  title:    { type: String, required: true, trim: true },
-  slug:     { type: String, unique: true, index: true },
-  platform: { type: String, enum: ['pc', 'android'], default: 'pc', index: true },
-  genres:   [{ type: String, index: true }],
-  desc:     String,
-  price:    { type: Number, required: true, min: 0 },
-  discount: { type: Number, default: 0, min: 0, max: 100 },
-  rating:   { type: Number, default: 0, min: 0, max: 5 },
-  cover:    String,
-  hero:     String,
-  keys:     [{ code: String, used: { type: Boolean, default: false } }],
-  featured: { type: Boolean, default: false },
-  isNew:    { type: Boolean, default: false },
-  active:   { type: Boolean, default: true },
-}, { timestamps: true, toJSON: { virtuals: true } });
-
-GameSchema.virtual('finalPrice').get(function () {
-  return +(this.price * (1 - this.discount / 100)).toFixed(2);
-});
-GameSchema.pre('validate', function (next) {
-  if (!this.slug && this.title)
-    this.slug = this.title.toLowerCase().replace(/[^\w\u0600-\u06FF]+/g, '-').replace(/^-|-$/g, '');
-  next();
-});
-
-const OrderSchema = new mongoose.Schema({
-  user:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  items:   [{ game: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' }, title: String, price: Number }],
-  total:   { type: Number, required: true },
-  method:  { type: String, enum: ['card', 'usdt'], required: true },
-  network: String,
-  txid:    String,
-  status:  { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
-  keys:    [{ title: String, code: String }],
-}, { timestamps: true });
-
-const User  = mongoose.model('User', UserSchema);
-const Game  = mongoose.model('Game', GameSchema);
-const Order = mongoose.model('Order', OrderSchema);
-
-/* ── APP ─────────────────────────────────────────────── */
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const sign = u => jwt.sign({ id: u._id, role: u.role }, JWT_SECRET, { expiresIn: '30d' });
-const ok   = (res, data, code = 200) => res.status(code).json(data);
-const wrap = fn => (req, res) => fn(req, res).catch(e => res.status(400).json({ error: e.message }));
-
-const protect = wrap(async (req, res, next) => {
-  const t = (req.headers.authorization || '').startsWith('Bearer ') && req.headers.authorization.split(' ')[1];
-  if (!t) return res.status(401).json({ error: 'غير مصرّح' });
-  try {
-    const d = jwt.verify(t, JWT_SECRET);
-    req.user = await User.findById(d.id);
-    if (!req.user) throw new Error();
-    next();
-  } catch { res.status(401).json({ error: 'توكن غير صالح' }); }
-});
-const admin = (req, res, next) =>
-  req.user?.role === 'admin' ? next() : res.status(403).json({ error: 'للمسؤول فقط' });
-
-/* ── 3) AUTH API ─────────────────────────────────────── */
-app.post('/api/auth/register', wrap(async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password || password.length < 8)
-    return res.status(400).json({ error: 'بيانات ناقصة أو كلمة مرور قصيرة' });
+  name:     { type: String, required: true, trim: true },    return res.status(400).json({ error: 'بيانات ناقصة أو كلمة مرور قصيرة' });
   if (await User.findOne({ email })) return res.status(409).json({ error: 'البريد مستخدم مسبقاً' });
   const u = await User.create({ name, email, password });
   ok(res, { token: sign(u), user: { id: u._id, name: u.name, email: u.email, role: u.role } }, 201);
