@@ -247,7 +247,6 @@ app.post('/api/setup/admin', wrap(async (req, res) => {
   const { name = 'AMARIX007', email, password } = req.body;
   const u = await User.create({ name, email, password, role: 'admin' });
   ok(res, { token: sign(u), user: { id: u._id, email: u.email, role: u.role } }, 201);
-}));
-
+}));app.use(express.static('.'));
 app.use((req, res) => res.status(404).json({ error: 'المسار غير موجود' }));
-app.listen(PORT, () => console.log(`AMARIX007 API on :${PORT}`));
+app.listen(PORT, () => console.log(`AMARIX007 API on :${PORT}`))
