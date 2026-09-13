@@ -15,10 +15,14 @@ const {
   USDT_TRC20 = 'TXk9AmARiX007dEmoAddrEsS4Usdt7Trc20xyz',
   USDT_BEP20 = '0xA7amarix0071bDeMo9AddrEsS4Usdt5Bep20',
   SEED_KEY = 'amarix123',
+  RAWG_API_KEY,
 } = process.env;
 
 /* ── 1) DB ───────────────────────────────────────────── */
-mongoose.connect(MONGO_URI)
+// مهلة أطول للاستعلامات وللبحث عن السيرفر، عشان Cold Start في Vercel أحياناً بياخد وقت
+mongoose.set('bufferTimeoutMS', 30000);
+
+mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 30000 })
   .then(() => console.log('MongoDB connected'))
   .catch(e => console.error('DB error:', e.message));
 
@@ -241,10 +245,11 @@ app.post('/api/setup/admin', wrap(async (req, res) => {
 app.get('/api/setup/seed-rawg', wrap(async (req, res) => {
   const { key, pages = 1, platform = 'pc' } = req.query;
   if (!key || key !== SEED_KEY) return res.status(403).json({ error: 'مفتاح غير صحيح' });
+  if (!RAWG_API_KEY) return res.status(500).json({ error: 'RAWG_API_KEY غير مضافة في Environment Variables' });
 
   let inserted = 0, skipped = 0;
   for (let p = 1; p <= +pages; p++) {
-    const url = `https://api.rawg.io/api/games?key=b987c688e7484a2cb27470f0c73ca4aa&page=${p}&page_size=40&ordering=-rating`;
+    const url = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&page=${p}&page_size=40&ordering=-rating`;
     const r = await fetch(url);
     const data = await r.json();
     if (!data.results) break;
